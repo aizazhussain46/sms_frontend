@@ -7,7 +7,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <v-toolbar-title>Users</v-toolbar-title>
+        <v-toolbar-title>Clients</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -23,7 +23,7 @@
         ></v-divider>
         <v-dialog v-model="dialog" max-width="900px">
           <template v-slot:activator="{ on }">
-            <v-btn small dark class="secondary lighten-2 mb-2" v-on="on">Add User</v-btn>
+            <v-btn small dark class="secondary lighten-2 mb-2" v-on="on">Add Client</v-btn>
           </template>
           <v-card>
             <v-card-title>
