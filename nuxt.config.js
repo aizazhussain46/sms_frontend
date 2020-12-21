@@ -44,7 +44,7 @@ module.exports = {
  modules: [ '@nuxtjs/axios', '@nuxtjs/auth' ],
 axios: { 
           // baseURL : 'http://localhost:8000/api/' 
-       baseURL : 'https://backend.dev-ssep.tk/api/'
+       baseURL : 'https://smsbackend.ordd.tk/api/'
       //  baseURL : 'https://orangeroomdigital.com/sscp/public/api/' 
 },
 
