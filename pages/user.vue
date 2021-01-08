@@ -39,8 +39,9 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                   <v-col cols="4" sm="4" md="4">
-                    <v-select
+                   <!-- <v-col cols="4" sm="4" md="4">
+
+                     <v-select
                         v-model="editedItem.role_id"
                         :items="roles"
                         item-text="role"
@@ -48,36 +49,7 @@
                         label="Role"
                         ></v-select>
                         <div style="color:red;" v-if="errors.role_id">{{errors.role_id[0]}}</div>
-                  </v-col>
-
-
-                    <v-col cols="4" sm="4" md="4">
-                    <v-select
-                        v-model="editedItem.department_id"
-                        :items="departments"
-                        item-text="department"
-                        item-value="id"
-                        label="Department"
-                        ></v-select>
-                        <div style="color:red;" v-if="errors.department_id">
-                        The department field is required.
-                        </div>
-                  
-                  </v-col>
-
-                    <v-col cols="4" sm="4" md="4">
-                    <v-select
-                        v-model="editedItem.district_id"
-                        :items="districts"
-                        item-text="district"
-                        item-value="id"
-                        label="District"
-                        ></v-select>
-                        <div style="color:red;" v-if="errors.department_id">
-                        The district field is required.
-                        </div>
-                  </v-col>
-
+                  </v-col> -->
 
                   <v-col cols="6" sm="6" md="6">
                     <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
@@ -99,11 +71,8 @@
                     <div style="color:red;" v-if="errors.confirm_password">{{errors.confirm_password[0]}}</div>
                   </v-col>
 
-                  
-                  
-                
+                                
                   <v-col cols="6" sm="6" md="6">
-
                     <v-text-field v-model="editedItem.mobile_no" label="Mobile No"></v-text-field>
                     <div style="color:red;" v-if="errors.mobile_no">{{errors.mobile_no[0]}}</div>
                   </v-col>
@@ -189,11 +158,6 @@
           value: 'id',
         },
         {
-          text: 'Role',
-          sortable: true,
-          value: 'role.role',
-        },
-        {
           text: 'Name',
           sortable: true,
           value: 'name',
@@ -209,16 +173,6 @@
           value: 'mobile_no',
         },
         {
-          text: 'District',
-          sortable: false,
-          value: 'district.district',
-        },
-         {
-          text: 'Department',
-          sortable: false,
-          value: 'department.department',
-        },
-        {
           text: 'Active',
           sortable: true,
           value: 'isActive',
@@ -228,31 +182,22 @@
       ],
       data: [],
       statusses : [],
-      districts : [],
-      departments : [],
-      roles : [],
       editedIndex: -1,
       editedItem: {
-      role_id: "",
-      department_id : "",
       name: "",
       email: "",
       password: "",
       confirm_password: "",
       mobile_no: "",
       cnic: "",
-      district_id: "",
       },
       defaultItem: {
-      role_id: "",
-      department_id : "",
       name: "",
       email: "",
       password: "",
       confirm_password: "",
       mobile_no: "",
       cnic: "",
-      district_id: "",
       confirm_password: ""
       },
       change_password: "",
@@ -282,13 +227,7 @@
     methods: {
       initialize () {
 
-      this.$axios.get('user').then(res => this.data = res.data.data.filter(v => v.master == 0));
-
-      this.$axios.get('role').then(res => this.roles = res.data);
-
-      this.$axios.get('department').then(res => this.departments = res.data);
-
-      this.$axios.get('district').then(res => this.districts = res.data);
+        this.$axios.get('user').then(res => this.data = res.data.data.filter(v => v.master == 0));
       
       },
 
@@ -335,23 +274,18 @@
       save () {
 
          var payload = {
-              role_id : this.editedItem.role_id,
-              department_id : this.editedItem.department_id,
               name : this.editedItem.name,
               email : this.editedItem.email,
               mobile_no : this.editedItem.mobile_no,
               cnic : this.editedItem.cnic,
-              district_id : this.editedItem.district_id,
               isActive : this.isActive ? 1 : 0,
+              // role_id : 7
           };
 
 
         
         if (this.editedIndex > -1) {
        //   Object.assign(this.data[this.editedIndex], this.editedItem)
-
-        
-          console.log(payload);
 
             this.$axios.put('user/' + this.editedItem.id, payload)
             .then(res => {
@@ -363,9 +297,9 @@
                       this.close()
                       this.errors = []
                       }
-                      else{
+                  else{
                         this.errors = res.data.errors
-                        }
+                  }
      
             })
             .catch(err => console.log(this.errors = err.response.data.errors));

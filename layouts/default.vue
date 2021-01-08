@@ -5,7 +5,7 @@ v-model="drawer" :clipped="clipped" fixed app>
 <v-list>
 <v-list-item>
 <v-list-item-content>
-<img src="/ssep-logo.png" alt="ssep login" style="width:50px; height:auto">
+<img src="/logo.png" alt="ssep login" style="width:50px; height:auto">
 </v-list-item-content>
 </v-list-item>
 
@@ -80,6 +80,12 @@ get_menus () {
   var menu = [
             { icon: 'mdi-apps', title: 'Home',to: '/' },
             { icon: 'mdi-chart-bubble', title: 'User',to: '/user' },
+            { icon: 'mdi-chart-bubble', title: 'Quick SMS',to: '/quick_sms' },
+            { icon: 'mdi-chart-bubble', title: 'Bulk SMS',to: '/bulk_sms' },
+            { icon: 'mdi-chart-bubble', title: 'Contact',to: '/contact' },
+            { icon: 'mdi-chart-bubble', title: 'Campaign',to: '/campaign' },
+            { icon: 'mdi-chart-bubble', title: 'City',to: '/city' },
+            
   ];
 
   this.menus = menu;
@@ -94,7 +100,7 @@ get_menus () {
 </script>
 
 <style>
-.grad {
-  background: linear-gradient(to bottom right, #0e97e7, grey);
-}
+/* .grad {
+  background: linear-gradient(to bottom right, orange, grey);
+} */
 </style>

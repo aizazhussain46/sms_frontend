@@ -1,5 +1,8 @@
 <template>
-  <v-data-table
+   <div>  
+   <ZongCard />
+   
+   <v-data-table
     :headers="headers"
     :items="data"
     :search="search"
@@ -23,10 +26,14 @@
       <v-btn small color="primary" @click="initialize">Reset</v-btn>
     </template>
   </v-data-table>
+</div>
 </template>
 
 <script>
+import ZongCard from '~/components/ZongCard.vue'
+
   export default {
+    components : {ZongCard},
     data: () => ({
       dialog: false,
       isActive: true,
@@ -122,10 +129,6 @@
 
       this.$axios.get('role').then(res => this.roles = res.data);
 
-      this.$axios.get('department').then(res => this.departments = res.data);
-
-      this.$axios.get('district').then(res => this.districts = res.data);
-      
       },
 
       editItem (item) {

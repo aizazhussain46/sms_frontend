@@ -22,7 +22,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#0e97e7' },
+  loading: { color: colors.grey.darken1 },
   /*
   ** Global CSS
   */
@@ -55,6 +55,7 @@ auth: {
       endpoints: {
         login: { url: 'login', method: 'post', propertyName: 'token' },
         logout: false,
+        // user:false,
         user: { url: 'me', method: 'get', propertyName: 'user' }
       }
      
@@ -102,13 +103,5 @@ router: {
     extend (config, ctx) {
     }
   },
-  generate: {
-    routes() {
-      return axios.get('https://backend.dev-ssep.tk/api/job/').then(res => {
-        return res.data.data.map(j => {
-          return 'job/' + j.id
-        })
-      })
-    }
-  }
+  
 }

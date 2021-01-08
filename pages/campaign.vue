@@ -1,13 +1,13 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="data"
     :search="search"
+    :items="data"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <v-toolbar-title>District</v-toolbar-title>
+        <v-toolbar-title>Campaign</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -18,14 +18,14 @@
         label="Search"
         hide-details
       ></v-text-field>
-        <v-divider
+       <v-divider
           class="mx-4"
           inset
           vertical
         ></v-divider>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on }">
-            <v-btn small dark class="secondary lighten-2 mb-2" v-on="on">Add District</v-btn>
+            <v-btn small dark class="secondary lighten-2 mb-2" v-on="on">Add Campaign</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -34,12 +34,16 @@
 
             <v-card-text>
               <v-container>
-                <v-row>
+                <v-form ref="form">
+                  <v-row>
                   <v-col cols="12" sm="12" md="12">
-                    <v-text-field v-model="editedItem.district" label="District"></v-text-field>
+                    <v-text-field :rules="rules" v-model="editedItem.campaign" label="Campaign"></v-text-field>
                   </v-col>
                 
                 </v-row>
+                
+                </v-form>
+                
               </v-container>
             </v-card-text>
 
@@ -76,18 +80,23 @@
 <script>
   export default {
     data: () => ({
-      search:'',
       dialog: false,
+      search:'',
+       rules : [
+        v => !!v || 'This field is required',
+        v => v.length < 50 || 'character limit should not be greater than 50' 
+      ],
       headers: [
+      
         {
-          text: 'id',
+          text: 'Client',
           sortable: true,
-          value: 'id',
+          value: 'user.name',
         },
-        {
-          text: 'district',
+         {
+          text: 'Campaign',
           sortable: true,
-          value: 'district',
+          value: 'campaign_name',
         },
         { text: 'Actions', value: 'actions', sortable: false },
 
@@ -95,10 +104,10 @@
       data: [],
       editedIndex: -1,
       editedItem: {
-       district:'',
+       campaign:'',
       },
       defaultItem: {
-       district:'',
+       campaign:'',
       },
     }),
 
@@ -110,7 +119,7 @@
 
     watch: {
       dialog (val) {
-        val || this.close()
+        // val || this.close()
       },
     },
 
@@ -121,25 +130,22 @@
     methods: {
       initialize () {
 
-      this.$axios.get('district').then(res => {
-
-          this.data = res.data
-        console.log(res.data)  
-
-        });
+      this.$axios.get('campaign').then(res => this.data = res.data);
 
       },
 
       editItem (item) {
+         
         this.editedIndex = this.data.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.editedItem.id = item.id
+        this.editedItem.campaign = item.campaign_name
         this.dialog = true
       },
 
       deleteItem (item) {
         const index = this.data.indexOf(item)
          confirm('Are you sure you want to delete this item?') && 
-         this.$axios.delete('district/'+item.id)
+         this.$axios.delete('campaign/'+item.id)
             .then((res) => {
      
               const index = this.data.indexOf(item)
@@ -157,36 +163,36 @@
       },
 
       save () {
+
+          if(this.$refs.form.validate()){
+
+        let payload = {
+          campaign_name: this.editedItem.campaign
+        };
         if (this.editedIndex > -1) {
+          
        //   Object.assign(this.data[this.editedIndex], this.editedItem)
-
-            this.$axios.put('district/' + this.editedItem.id, {
-            district: this.editedItem.district
-            })
+        
+            this.$axios.put('campaign/' + this.editedItem.id,payload)
             .then(res => {
-
-            const index = this.data.findIndex(item => item.id == this.editedItem.id)
-            this.data.splice(index, 1,{
-            id:this.editedItem.id,
-            district:this.editedItem.district
-            });
-   
+              const index = this.data.findIndex(item => item.id == this.editedItem.id)
+              this.data.splice(index, 1,res.data.data);
               this.close()
      
             })
-            .catch(error => console.log(err));
+            .catch(err => console.log(err));
 
-
+       
         } else {
-          
-              this.$axios.post('district',{district:this.editedItem.district})
+       
+              this.$axios.post('campaign',payload)
               .then((res) => {
-            
-              this.data.push(res.data.data)
-              this.close()
-              
-            
-            });
+              this.data.push(res.data.data);
+              this.close();
+            })
+            .catch(err => console.log(err));
+
+           }
         }
      
       },
