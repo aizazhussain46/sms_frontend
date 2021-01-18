@@ -7,7 +7,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <v-toolbar-title>Quick SMS</v-toolbar-title>
+        <v-toolbar-title>Masking</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -25,7 +25,7 @@
         ></v-divider>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on }">
-            <v-btn small dark class="secondary lighten-2 mb-2" v-on="on">Add Quick SMS</v-btn>
+            <v-btn small dark class="secondary lighten-2 mb-2" v-on="on">Add Masking</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -34,18 +34,12 @@
 
             <v-card-text>
               <v-container>
-               <v-form ref="form">
-                  <v-row>
+                <v-row>
                   <v-col cols="12" sm="12" md="12">
-                    <v-text-field counter :rules="rules4number" v-model="editedItem.number" label="Number"></v-text-field>
+                    <v-text-field v-model="editedItem.mask_name" label="Masking"></v-text-field>
                   </v-col>
                 
-                 <v-col cols="12" sm="12" md="12">
-                    <v-textarea counter :rules="rules4msg" v-model="editedItem.msg" label="Message"></v-textarea>
-                  </v-col>
-
                 </v-row>
-               </v-form>
               </v-container>
             </v-card-text>
 
@@ -58,11 +52,24 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    
+    <template v-slot:item.actions="{ item }">
+      <v-icon
+        small
+        class="mr-2"
+        @click="editItem(item)"
+      >
+        mdi-pencil
+      </v-icon>
+      <v-icon
+        small
+        @click="deleteItem(item)"
+      >
+        mdi-delete
+      </v-icon>
+    </template>
     <template v-slot:no-data>
       <v-btn small color="primary" @click="initialize">Reset</v-btn>
     </template>
- 
   </v-data-table>
 </template>
 
@@ -72,22 +79,15 @@
       dialog: false,
       search:'',
       headers: [
-     
+        // {
+        //   text: 'id',
+        //   sortable: true,
+        //   value: 'id',
+        // },
         {
-          text: 'Sender',
+          text: 'Masking',
           sortable: true,
-          value: 'user.name',
-        },
-         {
-          text: 'Recipient',
-          sortable: true,
-          value: 'recipient',
-        },
-      
-        {
-          text : 'Status',
-          sortable : true,
-          value : 'response.QuickSMSResult'
+          value: 'mask_name',
         },
         { text: 'Actions', value: 'actions', sortable: false },
 
@@ -95,33 +95,14 @@
       data: [],
       editedIndex: -1,
       editedItem: {
-       number:'',
-       msg : '',
+       mask_name:'',
       },
       defaultItem: {
-       number:'',
-       msg : '',
+       mask_name:'',
       },
-      rules4number : [
-          v => /^92/.test(v) || 'Must start with 92 instead of 0',
-          v => /^\d+$/.test(v) || 'Must be a number',
-          v => v.length < 13 || 'Must be less than 13 character'
-      ],
-      rules4msg : [ 
-          v => !!v || 'E-mail is required',
-          v => v.length < 160 || 'Must be less than 160 character'
-      ]
-     
     }),
 
-
-
     computed: {
-
-    testing(v){
-      return v
-    },
-     
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },
@@ -131,7 +112,6 @@
       dialog (val) {
         val || this.close()
       },
-      
     },
 
     created () {
@@ -141,17 +121,26 @@
     methods: {
       initialize () {
 
-         this.$axios.get('role').then(res => this.data = res.data);         
-         this.$axios.get('quick_sms_logs').then(res => {
-           this.data = res.data.data.map(v => ({
-             id : v.id,
-             message : v.message,
-             recipient : v.recipient,
-             response : JSON.parse(v.response),
-             user : v.user
-             
-           }));
-         } );
+      this.$axios.get('mask').then(res => this.data = res.data);
+
+      },
+
+      editItem (item) {
+        this.editedIndex = this.data.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialog = true
+      },
+
+      deleteItem (item) {
+        const index = this.data.indexOf(item)
+         confirm('Are you sure you want to delete this item?') && 
+         this.$axios.delete('mask/'+item.id)
+            .then((res) => {
+     
+              const index = this.data.indexOf(item)
+              this.data.splice(index, 1)
+            
+            });
       },
 
       close () {
@@ -163,20 +152,37 @@
       },
 
       save () {
+        if (this.editedIndex > -1) {
+       //   Object.assign(this.data[this.editedIndex], this.editedItem)
 
-          var payload = {
-              number : this.editedItem.number,
-              message : this.editedItem.msg
-          }
+            this.$axios.put('mask/' + this.editedItem.id, {
+            mask_name: this.editedItem.mask_name
+            })
+            .then(res => {
+
+            const index = this.data.findIndex(item => item.id == this.editedItem.id)
+            this.data.splice(index, 1,{
+            id:this.editedItem.id,
+            mask_name:this.editedItem.mask_name
+            });
+   
+              this.close()
+     
+            })
+            .catch(error => console.log(err));
+
+
+        } else {
           
-            if(this.$refs.form.validate()){
-              this.$axios.post('quick_sms',payload)
+              this.$axios.post('mask',{mask_name:this.editedItem.mask_name})
               .then((res) => {
-                this.close()
+            
+              this.data.push(res.data.data)
+              this.close()
               
             
             });
-            }
+        }
      
       },
     },

@@ -22,6 +22,13 @@
         label="Search"
         hide-details
       ></v-text-field>
+               <v-divider
+          class="mx-4"
+          inset
+          vertical
+        ></v-divider>
+        <v-btn small dark class="secondary lighten-1 mb-2">Upload Contacts</v-btn>
+
        <v-divider
           class="mx-4"
           inset
@@ -29,7 +36,7 @@
         ></v-divider>
         <v-dialog v-model="dialog" max-width="700px">
           <template v-slot:activator="{ on }">
-            <v-btn small dark class="secondary lighten-2 mb-2" v-on="on">Add Contact</v-btn>
+            <v-btn small dark class="secondary lighten-1 mb-2" v-on="on">Add Single Contact</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -38,24 +45,24 @@
             </v-card-title>
 
             <v-card-text>
+              <v-form ref="form">
         
                 <v-row>
 
                    <v-col cols="6" sm="12" md="6">
                     <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
                   </v-col>
-                   
-                  <v-col cols="6" sm="12" md="6">
-                 
-                      <v-autocomplete 
-                      v-model="editedItem.campaign_id" 
-                      :items="campaigns" 
-                      item-value="id" 
-                      item-text="campaign_name"
-                      label="Campaign"></v-autocomplete>
-                   
-                  </v-col>
 
+                   <v-col cols="6" sm="12" md="6">
+                      <v-autocomplete
+                      :rules="GroupRules" 
+                      v-model="editedItem.group_id" 
+                      :items="groups" 
+                      item-value="id" 
+                      item-text="group_name"
+                      label="Group"></v-autocomplete>
+                  </v-col> 
+                   
                    <v-col cols="6" sm="12" md="6">
                     <v-text-field :rules="rule4number" v-model="editedItem.number" label="Number"></v-text-field>
                   </v-col> 
@@ -82,13 +89,8 @@
                   
                   
                    
-                    <v-col cols="12" sm="12" md="12">
-                          <v-autocomplete 
-                      v-model="editedItem.city_id" 
-                      :items="cities" 
-                      item-value="id" 
-                      item-text="city_name"
-                      label="City"></v-autocomplete>
+                  <v-col cols="12" sm="12" md="12">
+                       <v-text-field v-model="editedItem.city" label="City"></v-text-field>
                   </v-col> 
                    <v-col cols="12" sm="12" md="12">
                     <v-textarea rows="3" v-model="editedItem.area" label="Area"></v-textarea>
@@ -96,6 +98,9 @@
                   
                                 
                 </v-row>
+                
+              </v-form>
+
             
             </v-card-text>
 
@@ -106,6 +111,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
@@ -139,27 +145,23 @@
       msg : '',
       search:'',
       headers: [
+       
         {
-            text : 'client name',
+            text : 'group',
             sortable : true,
-            value : 'user.name'
+            value : 'group.group_name'
         },  
         {
-          text: 'campaign',
+          text: 'number',
           sortable: true,
-          value: 'campaign.campaign_name',
+          value: 'number',
         },
-      
          {
           text: 'name',
           sortable: true,
           value: 'name',
         },
-         {
-          text: 'Number',
-          sortable: true,
-          value: 'number',
-        },
+         
          {
           text: 'age',
           sortable: true,
@@ -186,30 +188,35 @@
       data: [],
       editedIndex: -1,
       editedItem: {
-        campaign_id : '',
         number : '',
         name : '',
         age : '',
         area : '',
-        city_id : '',
+        city : '',
+        group_id : '',
         gender : '',
       },
       defaultItem: {
-       campaign_id : '',
         number : '',
         name : '',
         age : '',
         area : '',
-        city_id : '',
+        city : '',
+        group_id : '',
         gender : '',
         
       },
       cities : [],
-      campaigns : [],
-      rule4number : [
+     
+       GroupRules : [
+        v => !!v || 'this field is required',
+      ],
+       rule4number : [
         v => !!v || 'this field is required',
         v => /^92/.test(v) || 'Number shoud start with 92 instead of 0'
-      ]
+      ],
+      groups : [],
+
     }),
 
     computed: {
@@ -231,9 +238,9 @@
     methods: {
       initialize () {
        
-      this.$axios.get('contact').then(res => this.data = res.data);
-      this.$axios.get('city').then(res => this.cities = res.data);
-      this.$axios.get('campaign').then(res => this.campaigns = res.data);
+      this.$axios.get('group_by_user').then(res => this.groups = res.data);
+      
+      this.$axios.get('contact_by_user').then(res => console.log(this.data = res.data));
 
      
 
@@ -269,13 +276,16 @@
 
       save () {
 
+        if(this.$refs.form.validate()){
+
+
         var payload = {
-              campaign_id : this.editedItem.campaign_id,
               number : this.editedItem.number,
               name : this.editedItem.name,
               age : this.editedItem.age,
               area : this.editedItem.area,
-              city_id : this.editedItem.city_id,
+              city : this.editedItem.city,
+              group_id : this.editedItem.group_id,
               gender : this.editedItem.gender,
             };
         if (this.editedIndex > -1) {
@@ -296,10 +306,17 @@
               this.$axios.post('contact',payload)
                .then((res) => {
 
-                this.snackbar = true;
-                this.msg = 'your record has been inserted';
-            
-                this.data.push(res.data.data)
+                 if(res.data.success){
+                  this.snackbar = true;
+                  this.msg = 'your record has been inserted';
+                  this.data.push(res.data.data);
+
+                 }
+                 else{
+                  this.snackbar = true;
+                  this.msg = 'error occured';
+
+                 }
                 this.close()
              
             })
@@ -312,7 +329,8 @@
           
             
         }
-     
+       }
+
       },
     },
   }

@@ -1,6 +1,6 @@
 <template>
 <div>
-    <v-row v-if="CounterResponse.ErrorMessage">
+    <!-- <v-row v-if="CounterResponse.ErrorMessage">
         <v-col cols="12">
            <v-card class="primary" dark>
                 <v-list-item>
@@ -11,8 +11,8 @@
                 </v-list-item>
            </v-card>
         </v-col>
-    </v-row>
-    <v-row v-else>
+    </v-row> -->
+    <v-row>
         <v-col cols="3">
         <v-card class="secondary" dark>
         <v-list-item>
@@ -108,7 +108,7 @@ User_Masks: "",
 ErrorMessage: null
 }
 }),
-async created () {  
+async mounted () {  
       
    await this.$axios.get('totalbalance')
    .then(res => {

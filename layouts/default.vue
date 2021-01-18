@@ -68,7 +68,7 @@ label:'Logout'
 }
 }
 },
-created () {
+mounted () {
   this.get_menus();
 },
 methods:{
@@ -79,20 +79,23 @@ get_menus () {
 
   var menu = [
             { icon: 'mdi-apps', title: 'Home',to: '/' },
-            { icon: 'mdi-chart-bubble', title: 'User',to: '/user' },
-            { icon: 'mdi-chart-bubble', title: 'Quick SMS',to: '/quick_sms' },
-            { icon: 'mdi-chart-bubble', title: 'Bulk SMS',to: '/bulk_sms' },
+           
+            { icon: 'mdi-chart-bubble', title: 'Compose Message',to: '/compose' },
             { icon: 'mdi-chart-bubble', title: 'Contact',to: '/contact' },
+            { icon: 'mdi-chart-bubble', title: 'Contact Groups',to: '/contact_groups' },
             { icon: 'mdi-chart-bubble', title: 'Campaign',to: '/campaign' },
-            { icon: 'mdi-chart-bubble', title: 'City',to: '/city' },
+            
             
   ];
 
-  this.menus = menu;
+    if(this.$auth.user.master){
+       
+         menu.push({ icon: 'mdi-chart-bubble', title: 'Masking',to: '/mask' });
+         menu.push({ icon: 'mdi-chart-bubble', title: 'Client',to: '/user' });
+         menu.push({ icon: 'mdi-chart-bubble', title: 'City',to: '/city' });
+    }
 
-  
-
-
+    this.menus = menu;
 
 }
 }
