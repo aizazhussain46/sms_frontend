@@ -17,27 +17,20 @@
           inset
           vertical
         ></v-divider>
-          <v-text-field
+        <v-text-field
         v-model="search"
         label="Search"
         hide-details
       ></v-text-field>
-               <v-divider
+        <v-divider
           class="mx-4"
           inset
           vertical
         ></v-divider>
-        <v-btn small dark class="secondary lighten-1 mb-2">Upload Contacts</v-btn>
-
-       <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
+        
+        <v-btn small color="primary" @click="initialize">Reset</v-btn>
         <v-dialog v-model="dialog" max-width="700px">
-          <template v-slot:activator="{ on }">
-            <v-btn small dark class="secondary lighten-1 mb-2" v-on="on">Add Single Contact</v-btn>
-          </template>
+        
           <v-card>
             <v-card-title>
               <span class="headline">{{ formTitle }}</span>
@@ -138,6 +131,8 @@
 
 
 <script>
+
+
   export default {
     data: () => ({
       dialog: false,
@@ -243,6 +238,10 @@
       this.$axios.get('contact_by_user').then(res => console.log(this.data = res.data));
 
      
+
+      },
+
+      upload () {
 
       },
 

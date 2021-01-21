@@ -1,13 +1,15 @@
 <template>
 <v-app>
-<v-navigation-drawer 
+
+
+<v-navigation-drawer class="grad" dark
 v-model="drawer" :clipped="clipped" fixed app>
+<!-- <div class="text-center">
+<img src="/logo.png" alt="ssep login" style="width:150px; height:auto">
+
+</div> -->
+
 <v-list>
-<v-list-item>
-<v-list-item-content>
-<img src="/logo.png" alt="ssep login" style="width:50px; height:auto">
-</v-list-item-content>
-</v-list-item>
 
 <v-list-item v-for="(item, i) in menus" :key="i" :to="item.to" router exact>
 <v-list-item-action>
@@ -20,29 +22,33 @@ v-model="drawer" :clipped="clipped" fixed app>
 </v-list>
 </v-navigation-drawer>
 
-<v-app-bar app class="secondary">
+<!-- <v-app-bar app class="grad">
 <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="white--text"/>
-<!-- {{title}} -->
+{{title}}
 <span class="white--text" v-if="this.$auth.user" > Welcome, <b>{{this.$auth.user.name}}</b></span>
 <v-spacer />
 <v-icon class="white--text" @click="logout">{{ logout_btn.icon }}</v-icon>
-<!-- <span v-if="this.$auth.user" > Welcome, <b>{{this.$auth.user.name}}</b> -->
-<!-- <v-btn text> -->
-<!-- {{logout_btn.label}} -->
+<span v-if="this.$auth.user" > Welcome, <b>{{this.$auth.user.name}}</b> 
+<v-btn text>
+{{logout_btn.label}}
 
-<!-- </v-btn> -->
-<!-- </span> -->
-</v-app-bar>
-<v-main>
+</v-btn>
+</span>
+</v-app-bar> -->
+<v-main class="">
 
-<v-container>
+<v-container >
 <nuxt />
 </v-container>
 
 </v-main>
 
 <v-footer :fixed="fixed" app class="primary white--text">
-<span>&copy; {{year}}</span>
+<!-- <span>&copy; {{year}}</span> -->
+Welcome, &nbsp;<span>{{this.$auth.user.name}}</span>
+<v-spacer />
+<v-icon class="white--text" @click="logout">{{ logout_btn.icon }}</v-icon>
+
 </v-footer>
 </v-app>
 </template>
@@ -103,7 +109,7 @@ get_menus () {
 </script>
 
 <style>
-/* .grad {
-  background: linear-gradient(to bottom right, orange, grey);
-} */
+.grad {
+  background: linear-gradient(to right bottom, orange, #ff7300);
+}
 </style>

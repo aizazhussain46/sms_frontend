@@ -14,7 +14,7 @@
     </v-row> -->
     <v-row>
         <v-col cols="3">
-        <v-card class="secondary" dark>
+        <v-card>
         <v-list-item>
         <v-list-item-content>
         <div class="overline mb-4" >Total</div>
@@ -24,7 +24,7 @@
         <v-list-item-avatar
         size="80"
         class="grey--text"
-        color="white"
+        color="secondary"
         >
         {{CounterResponse.Total_Balance}}
         </v-list-item-avatar>
@@ -34,8 +34,8 @@
         </v-card>
         </v-col>
         <v-col cols="3">
-             <v-card class="secondary" dark>
-            <v-list-item class="secondary" dark>
+             <v-card>
+            <v-list-item>
             <v-list-item-content>
             <div class="overline mb-4" >Total</div>
             <v-list-item-title class="headline mb-1">Broadcasted</v-list-item-title>
@@ -44,7 +44,7 @@
             <v-list-item-avatar
             size="80"
             class="grey--text"
-            color="white"
+            color="secondary"
             >
             {{CounterResponse.Total_Broadcasted}}
             </v-list-item-avatar>
@@ -52,8 +52,8 @@
              </v-card>
         </v-col>
         <v-col cols="3">
-             <v-card class="secondary" dark>
-            <v-list-item class="secondary" dark>
+             <v-card>
+            <v-list-item>
             <v-list-item-content>
             <div class="overline mb-4" >Total</div>
             <v-list-item-title class="headline mb-1">Successful</v-list-item-title>
@@ -62,7 +62,7 @@
             <v-list-item-avatar
             size="80"
             class="grey--text"
-            color="white"
+            color="secondary"
             >
             {{CounterResponse.Total_Successful}}
             </v-list-item-avatar>
@@ -70,8 +70,8 @@
              </v-card>
         </v-col>
         <v-col cols="3">
-             <v-card class="secondary" dark>
-            <v-list-item class="secondary" dark>
+             <v-card>
+            <v-list-item>
             <v-list-item-content>
             <div class="overline mb-4" >Total</div>
             <v-list-item-title class="headline mb-1">Failed</v-list-item-title>
@@ -80,7 +80,7 @@
             <v-list-item-avatar
             size="80"
             class="grey--text"
-            color="white"
+            color="secondary"
             >
             {{CounterResponse.Total_Failed}}
             </v-list-item-avatar>
